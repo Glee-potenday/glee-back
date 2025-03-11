@@ -166,8 +166,8 @@ class OrchestratorAgent:
 
         suggestion_input += "위 내용을 바탕으로 자연스럽게 답장을 수정해서 작성해줘."
 
-        # 제목 제안 생성
-        titles = await self.title_agent.run(suggestion_input)
+        # 제목 제안 생성(suggestion_input에서 suggestion으로 수정)
+        titles = await self.title_agent.run(suggestion)
 
         # 답변 제안 생성
         replies = await self.reply_agent_new.run(suggestion_input)
