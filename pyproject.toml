@@ -41,7 +41,9 @@ target-version = ["py311"]
 plugins = "pydantic.mypy"
 python_version = "3.11"
 strict = true
-exclude = 'airflow/.*'
+explicit_package_bases = true
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+testpaths = ["test"]
+pythonpath = ["."]

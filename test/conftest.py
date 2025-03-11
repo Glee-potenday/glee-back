@@ -1,26 +1,24 @@
 import asyncio
+from asyncio import AbstractEventLoop
 from dataclasses import asdict
 from datetime import datetime
-from asyncio import AbstractEventLoop
 from pathlib import Path
 from typing import Generator
 
 import pytest_asyncio
-
-
 from bson import ObjectId
 
-from app.core.enums import SuggestionTagType
 from app.history.history_collection import HistoryCollection
-from app.history.history_document import HistoryDTO, HistoryDocument
+from app.history.history_document import HistoryDocument, HistoryDTO
 from app.suggester.suggester_document import SuggesterDocument, SuggesterDTO
 from app.user.user_document import UserDocument
 from app.user.user_dto import UserData
 from app.user.user_service import UserService
-from app.utils import mongo  # 기존 MongoDB 설정을 임포트
+from app.utils import mongo
 from app.utils.jwt_handler import JwtHandler
 from app.utils.jwt_payload import JwtPayload
 from app.utils.models.suggestion import Suggestion
+from app.core.enums import SuggestionTagType
 
 
 @pytest_asyncio.fixture(scope="session")
