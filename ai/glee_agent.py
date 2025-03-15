@@ -13,11 +13,11 @@ load_dotenv()  # .env 파일 로드
 
 
 class GleeAgent:
-    ocr_agent = OcrAgent()
-    summarizer_agent = SummarizerAgent()
-    style_agent = StyleAnalysisAgent()
+    ocr_agent: OcrAgent = OcrAgent()
+    summarizer_agent: SummarizerAgent = SummarizerAgent()
+    style_agent: StyleAnalysisAgent = StyleAnalysisAgent()
 
-    orchestrator_agent = OrchestratorAgent()
+    orchestrator_agent: OrchestratorAgent = OrchestratorAgent()
 
     @classmethod  # 실제적으로 사용되지 않는 메서드같습니다
     async def parse_suggestion(cls, suggestion: str) -> Tuple[str, str]:
@@ -71,8 +71,7 @@ class GleeAgent:
     # [3] 상황만을 기반으로 글 제안을 생성하는 함수
     @classmethod
     async def generate_suggestions_situation(cls, situation: str) -> tuple[list[str], list[str]]:
-        result = await cls.orchestrator_agent.run_reply_mode(situation)
-        return result["replies"], result["titles"]
+        return await cls.orchestrator_agent.run_reply_mode(situation)
 
     # -------------------------------------------------------------------
     # [4] 상황, 말투, 용도를 기반으로 글 제안을 생성하는 함수
@@ -81,8 +80,7 @@ class GleeAgent:
         cls, situation: str, accent: str, purpose: str
     ) -> tuple[list[str], list[str]]:
 
-        result = await cls.orchestrator_agent.run_manual_mode(situation, accent, purpose, "")
-        return result["replies"], result["titles"]
+        return await cls.orchestrator_agent.run_manual_mode(situation, accent, purpose, "")
 
     # -------------------------------------------------------------------
     # [5] 상황, 말투, 용도, 상세 설명을 기반으로 글 제안을 생성하는 함수
@@ -91,8 +89,7 @@ class GleeAgent:
         cls, situation: str, accent: str, purpose: str, detailed_description: str
     ) -> tuple[list[str], list[str]]:
 
-        result = await cls.orchestrator_agent.run_manual_mode(situation, accent, purpose, detailed_description)
-        return result["replies"], result["titles"]
+        return await cls.orchestrator_agent.run_manual_mode(situation, accent, purpose, detailed_description)
 
     # -------------------------------------------------------------------
     # [6] 상황, 말투, 용도, 상세 설명, 글 길이를 기반으로 글 제안을 생성하는 함수
@@ -102,6 +99,4 @@ class GleeAgent:
         cls, suggestion: str, length: str, add_description: str
     ) -> tuple[list[str], list[str]]:
 
-        result = await cls.orchestrator_agent.run_manual_mode_extended(suggestion, length, add_description)
-
-        return result["replies"], result["titles"]
+        return await cls.orchestrator_agent.run_manual_mode_extended(suggestion, length, add_description)

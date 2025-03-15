@@ -147,7 +147,7 @@ async def generate_suggestion(
 ) -> GenerateSuggestionsResponse:
     logger.info(f"Generating suggestions - User: {user.nickname if user else 'Guest'}, Request: {request}")
 
-    suggestions, titles = await SuggesterService.generate_suggestions(
+    titles, suggestions = await SuggesterService.generate_suggestions(
         situation=request.situation, tone=request.tone, usage=request.usage, detail=request.detail
     )
 
@@ -173,7 +173,7 @@ async def regenerate_suggestion(
 ) -> GenerateSuggestionsResponse:
     logger.info(f"Regenerating suggestions - User: {user.nickname if user else 'Guest'}, Request: {request}")
 
-    suggestions, titles = await SuggesterService.regenerate_suggestions(
+    titles, suggestions = await SuggesterService.regenerate_suggestions(
         exist_suggestion=request.exist_suggestion, length=request.length.value, detail=request.detail
     )
 

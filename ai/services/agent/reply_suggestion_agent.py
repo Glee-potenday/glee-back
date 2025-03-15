@@ -2,11 +2,11 @@ from ai.utils.services import reply_service
 
 
 class ReplySuggestionAgent:
-    def __init__(self, variant="old", max_retries=2):
+    def __init__(self, variant: str = "old", max_retries: int = 2):
         self.variant = variant
         self.max_retries = max_retries
 
-    async def run(self, input_text: str):
+    async def run(self, input_text: str) -> list[str]:
         retry = 0
         suggestions = []
         while retry <= self.max_retries:

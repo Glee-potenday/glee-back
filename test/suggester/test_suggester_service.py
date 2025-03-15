@@ -107,7 +107,7 @@ async def test_search_suggestions(exists_suggestion: SuggesterDocument, test_use
     assert len(suggestions) > 0
     assert "Test" in suggestions[0].suggestion
     assert suggestions[0].user_id == test_user.id
-    assert suggestions[0].tag == tags
+    assert str(suggestions[0].tag) == str(tags)
 
 
 @pytest.mark.asyncio
@@ -116,10 +116,11 @@ async def test_count(exists_suggestion: SuggesterDocument, test_user: UserDocume
 
     suggestions = await SuggesterService.find_suggestions_by_text("Test", test_user.id)
     tags = [tag.value for tag in exists_suggestion.tag]
+
     assert len(suggestions) > 0
     assert "Test" in suggestions[0].suggestion
     assert suggestions[0].user_id == test_user.id
-    assert suggestions[0].tag == tags
+    assert str(suggestions[0].tag) == str(tags)
 
 
 @pytest.mark.asyncio
@@ -147,7 +148,7 @@ async def test_regenerate_suggestions() -> None:
     exist_suggestion = "내가 저번에 한 말 때문에 상처 받았다면 정말 미안해. 내가 너무 생각없이 말한 것 같아. 다신 이런일 없도록 조심할게"
     length = ContentLength.EXTEND.value
     detail = "앞으로 잘 지내자는 내용을 추가 해줘"
-    suggestions, title = await SuggesterService.regenerate_suggestions(exist_suggestion, length, detail)
+    title, suggestions = await SuggesterService.regenerate_suggestions(exist_suggestion, length, detail)
 
     assert len(suggestions) > 0
     assert len(title) > 0

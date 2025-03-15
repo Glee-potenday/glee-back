@@ -14,13 +14,13 @@ from ai.utils.services import ocr_service
 class OcrAgent:
     """ocr 처리를 담당하는 에이전트"""
 
-    def __init__(self, max_retries=2):
+    def __init__(self, max_retries: int = 2) -> None:
         self.max_retries = max_retries
-        self.post_processor = OcrPostProcessingAgent()
-        self.preprocessor = ImagePreprocessor()
+        self.post_processor: OcrPostProcessingAgent = OcrPostProcessingAgent()
+        self.preprocessor: ImagePreprocessor = ImagePreprocessor()
 
     # 헬퍼 함수: ocr 결과 JSON에서 텍스트 추출
-    async def extract_text_from_ocr_result(self, ocr_result) -> str:
+    async def extract_text_from_ocr_result(self, ocr_result: str) -> str:
         """ocr 결과에서 텍스트를 추출"""
         if isinstance(ocr_result, str):
             return ocr_result

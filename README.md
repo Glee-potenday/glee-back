@@ -13,9 +13,9 @@ https://www.glee-message-maker.store/
 ### 1. 사용자 관리
    - 카카오 소셜 로그인과 JWT 기반 토큰 관리
    - 프로필 조회
-     
+
 ### 2. AI 글 제안 기능
-   - AI 기반 글 생성 
+   - AI 기반 글 생성
      - OCR 기반 대화 사진 속 상황, 말투, 목적 분석
      - 분석 상황에서의 AI 글 제안 생성
      - 사용자 요청에 기반하여 글 수정
@@ -36,7 +36,7 @@ poetry run uvicorn app.main:app
 ```
 
 
-# Test 
+# Test
 ```
 poetry run pytest
 ```

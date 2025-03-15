@@ -2,10 +2,10 @@ from ai.utils.services import situation_service
 
 
 class SummarizerAgent:
-    def __init__(self, max_retries=2):
+    def __init__(self, max_retries: int = 2) -> None:
         self.max_retries = max_retries
 
-    async def run(self, input_text: str):
+    async def run(self, input_text: str) -> str:
         retry = 0
         summary = ""
         while retry <= self.max_retries:

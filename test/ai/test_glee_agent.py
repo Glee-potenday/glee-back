@@ -28,12 +28,12 @@ from ai.glee_agent import GleeAgent
 
 
 @pytest.fixture
-def test_image_path():  # 테스트 이미지의 경로를 반환하는 픽스쳐
+def test_image_path() -> str:  # 테스트 이미지의 경로를 반환하는 픽스쳐
     return os.path.join(root_dir, "AI", "OCR_Test1.png")
 
 
 @pytest.fixture  # test1. input: 테스트 이미지의 경로 -> output: [(테스트 이미지의 이름, 데이터)]
-def test_image_files(test_image_path):
+def test_image_files(test_image_path: str) -> List[Tuple[str, bytes]]:
     if not os.path.exists(test_image_path):
         pytest.skip(f"테스트 이미지 파일이 존재하지 않습니다: {test_image_path}")
 
@@ -46,7 +46,7 @@ def test_image_files(test_image_path):
 
 
 @pytest.mark.asyncio  # 이미지 -> 상황 분석 텍스트
-async def test_analyze_situation(test_image_files):
+async def test_analyze_situation(test_image_files: List[Tuple[str, bytes]]) -> None:
     logger.info(f"test2. 이미지 파일 경로 -> 상황 분석 텍스트 테스트")
     start_time = time.time()
     result = await GleeAgent.analyze_situation(test_image_files)
@@ -62,7 +62,7 @@ async def test_analyze_situation(test_image_files):
 
 
 @pytest.mark.asyncio  # 이미지 -> 상황, 말투, 용도 분석 텍스트
-async def test_analyze_situation_accent_purpose(test_image_files):
+async def test_analyze_situation_accent_purpose(test_image_files: List[Tuple[str, bytes]]) -> None:
     logger.info(f"test3. 이미지 파일 경로 -> 상황, 말투, 용도 분석 텍스트 테스트")
     start_time = time.time()
     situation, accent, purpose = await GleeAgent.analyze_situation_accent_purpose(test_image_files)
@@ -85,7 +85,7 @@ async def test_analyze_situation_accent_purpose(test_image_files):
 
 
 @pytest.mark.asyncio  # 상황을 입력받았을 때 -> 제목,답변 생성 테스트
-async def test_generate_suggestions_situation():
+async def test_generate_suggestions_situation() -> None:
     logger.info(f"test4. 상황을 입력받았을 때 -> 제목, 답변 생성 테스트")
 
     # 모의 상황
@@ -120,7 +120,7 @@ async def test_generate_suggestions_situation():
 
 
 @pytest.mark.asyncio  # 상황, 말투, 용도 -> 답변 생성
-async def test_generate_reply_suggestions_accent_purpose():
+async def test_generate_reply_suggestions_accent_purpose() -> None:
     logger.info(f"test5. 상황, 말투, 용도에 맞는 답변 제안 생성 테스트")
 
     # 모의 상황 정의
@@ -159,7 +159,7 @@ async def test_generate_reply_suggestions_accent_purpose():
 
 
 @pytest.mark.asyncio  # 상황, 말투, 용도, 상세 설명 -> 답변 생성
-async def test_generate_reply_suggestions_detail():
+async def test_generate_reply_suggestions_detail() -> None:
     logger.info(f"test6. 상황, 말투, 용도, 상세 설명에 맞는 답변 제안 생성 테스트")
     # 테스트 데이터 정의
     test_situation = "면접에서 자기소개를 어떻게 하면 좋을지 알려주세요."
@@ -202,7 +202,7 @@ async def test_generate_reply_suggestions_detail():
 
 
 @pytest.mark.asyncio
-async def test_generate_reply_suggestions_detail_length():
+async def test_generate_reply_suggestions_detail_length() -> None:
     logger.info(f"test7. 실제 길이 조정 및 추가 설명을 포함한 답변 제안 생성 테스트")
     # 테스트 데이터 정의
     test_suggestion = "면접에서 자기소개를 어떻게 하면 좋을지 알려주세요."
