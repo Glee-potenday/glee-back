@@ -3,6 +3,9 @@
 
 https://www.glee-message-maker.store/
 
+![image](https://github.com/user-attachments/assets/63b220cb-5a5b-4de4-a702-40f32c011818)
+
+
 
 # 기술 스택
 - Python, FastAPI, MongoDB
