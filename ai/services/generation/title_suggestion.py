@@ -13,7 +13,7 @@ from ai.utils.deduplicate_sentence import deduplicate_sentences
 
 
 class TitleSuggestion:
-    def __init__(self):
+    def __init__(self) -> None:
         self.BASE_URL = "https://clovastudio.stream.ntruss.com/testapp/v1/chat-completions/HCX-003"
         self.BEARER_TOKEN = os.getenv("CLOVA_AI_BEARER_TOKEN")
         self.REQUEST_ID = os.getenv("CLOVA_REQ_ID_TITLE")
@@ -110,7 +110,7 @@ class TitleSuggestion:
             # 예외 처리: 예외가 발생한 경우 대체 제목으로 교체
             processed_titles = []
             for title in titles:
-                if isinstance(title, Exception):
+                if isinstance(title, BaseException):
                     logger.error(f"제목 생성 중 오류 발생: {title}")
                     processed_titles.append(self._get_fallback_title(input_text))
                 else:

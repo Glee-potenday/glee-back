@@ -7,6 +7,7 @@ from ai.glee_agent import GleeAgent
 from app.core.enums import SuggestionTagType
 from app.suggester.suggester_collection import SuggesterCollection
 from app.suggester.suggester_document import SuggesterDocument, SuggesterDTO
+from app.suggester.suggester_dto import AiSuggestionDto
 
 
 class SuggesterService:
@@ -58,24 +59,22 @@ class SuggesterService:
     @staticmethod
     async def generate_suggestions(
         situation: str, tone: str | None = None, usage: str | None = None, detail: str | None = None
-    ) -> tuple[list[str], list[str]]:
+    ) -> AiSuggestionDto:
         if situation and tone and usage and detail:
-            suggestions, title = await GleeAgent.generate_reply_suggestions_detail(situation, tone, usage, detail)
+            response = await GleeAgent.generate_reply_suggestions_detail(situation, tone, usage, detail)
         elif situation and tone and usage:
-            suggestions, title = await GleeAgent.generate_reply_suggestions_accent_purpose(situation, tone, usage)
+            response = await GleeAgent.generate_reply_suggestions_accent_purpose(situation, tone, usage)
         elif situation:
-            suggestions, title = await GleeAgent.generate_suggestions_situation(situation)
+            response = await GleeAgent.generate_suggestions_situation(situation)
         else:
             raise HTTPException(status_code=400, detail="Invalid Generate Suggestion Request")
-        return suggestions, title
+        return response
 
     @staticmethod
-    async def regenerate_suggestions(exist_suggestion: str, length: str, detail: str) -> tuple[list[str], list[str]]:
-        suggestions, title = await GleeAgent.generate_reply_suggestions_detail_length(
+    async def regenerate_suggestions(exist_suggestion: str, length: str, detail: str) -> AiSuggestionDto:
+        return await GleeAgent.generate_reply_suggestions_detail_length(
             suggestion=exist_suggestion, length=length, add_description=detail
         )
-
-        return suggestions, title
 
     @staticmethod
     async def update_suggestion_tags(

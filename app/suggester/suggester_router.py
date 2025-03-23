@@ -147,11 +147,14 @@ async def generate_suggestion(
 ) -> GenerateSuggestionsResponse:
     logger.info(f"Generating suggestions - User: {user.nickname if user else 'Guest'}, Request: {request}")
 
-    suggestions, titles = await SuggesterService.generate_suggestions(
+    response = await SuggesterService.generate_suggestions(
         situation=request.situation, tone=request.tone, usage=request.usage, detail=request.detail
     )
 
-    result = [GenerateSuggestion(title=title, content=suggestion) for title, suggestion in zip(titles, suggestions)]
+    result = [
+        GenerateSuggestion(title=title, content=suggestion)
+        for title, suggestion in zip(response.titles, response.suggestions)
+    ]
 
     logger.info(f"Generated suggestions - User: {user.nickname if user else 'Guest'}, Suggestions: {result}")
 
@@ -173,11 +176,14 @@ async def regenerate_suggestion(
 ) -> GenerateSuggestionsResponse:
     logger.info(f"Regenerating suggestions - User: {user.nickname if user else 'Guest'}, Request: {request}")
 
-    suggestions, titles = await SuggesterService.regenerate_suggestions(
+    response = await SuggesterService.regenerate_suggestions(
         exist_suggestion=request.exist_suggestion, length=request.length.value, detail=request.detail
     )
 
-    result = [GenerateSuggestion(title=title, content=suggestion) for title, suggestion in zip(titles, suggestions)]
+    result = [
+        GenerateSuggestion(title=title, content=suggestion)
+        for title, suggestion in zip(response.titles, response.suggestions)
+    ]
 
     logger.info(f"Regenerated suggestions - User: {user.nickname if user else 'Guest'}, Suggestions: {result}")
 
@@ -369,7 +375,6 @@ async def update_suggestion_tag(
 
     if suggestion.user_id != user.id:
         logger.error(f"Unauthorized tag update attempt by user {user.id} on suggestion {request.suggestion_id}")
-
         raise HTTPException(status_code=403, detail="Access denied")
 
     updated_suggestion = await SuggesterService.update_suggestion_tags(request.suggestion_id, request.tags)

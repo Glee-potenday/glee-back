@@ -15,14 +15,12 @@ repos:
         language: system
         types_or:
           - python
-        exclude: '(^|/)ai/'
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.6.2
     hooks:
       - id: ruff
         args: [--fix]
-        exclude: '(^|/)ai/'
 
   - repo: local
     hooks:
@@ -30,7 +28,7 @@ repos:
         name: mypy
         entry: mypy
         language: system
-        args: ["--exclude", "^ai/", "."]
+        args: ["."]
         types: [python]
         pass_filenames: false
 

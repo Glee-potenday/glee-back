@@ -1,10 +1,8 @@
-from typing import Tuple
-
 from ai.utils.services import situation_service
 
 
 class StyleAnalysisAgent:
-    def parse_style_analysis(self, result: str) -> Tuple[str, str, str]:
+    def parse_style_analysis(self, result: str) -> tuple[str, str, str]:
         """스타일 분석 결과에서 상황, 말투, 용도를 추출합니다."""
         situation = ""
         accent = ""
@@ -24,7 +22,7 @@ class StyleAnalysisAgent:
 
         return situation, accent, purpose
 
-    async def run(self, input_text: str):
+    async def run(self, input_text: str) -> tuple[str, str, str, str]:
         style_result = await situation_service.make_api_request(
             "config_style_analysis.yaml", input_text, random_seed=True
         )

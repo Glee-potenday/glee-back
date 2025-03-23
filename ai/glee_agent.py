@@ -7,20 +7,21 @@ from ai.services.agent.summarizer_agent import SummarizerAgent
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
 # sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from typing import List, Tuple
+
+from app.suggester.suggester_dto import AiSuggestionDto
 
 load_dotenv()  # .env 파일 로드
 
 
 class GleeAgent:
-    ocr_agent = OcrAgent()
-    summarizer_agent = SummarizerAgent()
-    style_agent = StyleAnalysisAgent()
+    ocr_agent: OcrAgent = OcrAgent()
+    summarizer_agent: SummarizerAgent = SummarizerAgent()
+    style_agent: StyleAnalysisAgent = StyleAnalysisAgent()
 
-    orchestrator_agent = OrchestratorAgent()
+    orchestrator_agent: OrchestratorAgent = OrchestratorAgent()
 
     @classmethod  # 실제적으로 사용되지 않는 메서드같습니다
-    async def parse_suggestion(cls, suggestion: str) -> Tuple[str, str]:
+    async def parse_suggestion(cls, suggestion: str) -> tuple[str, str]:
         """제안 텍스트에서 제목과 내용을 추출합니다."""
         title = ""
         content = suggestion
@@ -43,7 +44,7 @@ class GleeAgent:
     # -------------------------------------------------------------------
     # [1] 이미지파일 (최대 4개) 입력 -> 상황을 뱉어내는 함수
     @classmethod
-    async def analyze_situation(cls, image_files: List[Tuple[str, bytes]]) -> str:
+    async def analyze_situation(cls, image_files: list[tuple[str, bytes]]) -> str:
         if not image_files:
             raise ValueError("No image files provided.")
 
@@ -56,7 +57,7 @@ class GleeAgent:
 
     # [2] 이미지파일 (최대 4개) 입력 -> 상황, 말투, 용도를 뱉어내는 함수
     @classmethod
-    async def analyze_situation_accent_purpose(cls, image_files: List[Tuple[str, bytes]]) -> Tuple[str, str, str]:
+    async def analyze_situation_accent_purpose(cls, image_files: list[tuple[str, bytes]]) -> tuple[str, str, str]:
         if not image_files:
             return "", "", ""
 
@@ -70,29 +71,31 @@ class GleeAgent:
     # -------------------------------------------------------------------
     # [3] 상황만을 기반으로 글 제안을 생성하는 함수
     @classmethod
-    async def generate_suggestions_situation(cls, situation: str) -> tuple[list[str], list[str]]:
-        result = await cls.orchestrator_agent.run_reply_mode(situation)
-        return result["replies"], result["titles"]
+    async def generate_suggestions_situation(cls, situation: str) -> AiSuggestionDto:
+        title, suggestion = await cls.orchestrator_agent.run_reply_mode(situation)
+        return AiSuggestionDto(titles=title, suggestions=suggestion)
 
     # -------------------------------------------------------------------
     # [4] 상황, 말투, 용도를 기반으로 글 제안을 생성하는 함수
     @classmethod
     async def generate_reply_suggestions_accent_purpose(
         cls, situation: str, accent: str, purpose: str
-    ) -> tuple[list[str], list[str]]:
+    ) -> AiSuggestionDto:
 
-        result = await cls.orchestrator_agent.run_manual_mode(situation, accent, purpose, "")
-        return result["replies"], result["titles"]
+        title, suggestion = await cls.orchestrator_agent.run_manual_mode(situation, accent, purpose, "")
+        return AiSuggestionDto(titles=title, suggestions=suggestion)
 
     # -------------------------------------------------------------------
     # [5] 상황, 말투, 용도, 상세 설명을 기반으로 글 제안을 생성하는 함수
     @classmethod
     async def generate_reply_suggestions_detail(
         cls, situation: str, accent: str, purpose: str, detailed_description: str
-    ) -> tuple[list[str], list[str]]:
+    ) -> AiSuggestionDto:
 
-        result = await cls.orchestrator_agent.run_manual_mode(situation, accent, purpose, detailed_description)
-        return result["replies"], result["titles"]
+        title, suggestion = await cls.orchestrator_agent.run_manual_mode(
+            situation, accent, purpose, detailed_description
+        )
+        return AiSuggestionDto(titles=title, suggestions=suggestion)
 
     # -------------------------------------------------------------------
     # [6] 상황, 말투, 용도, 상세 설명, 글 길이를 기반으로 글 제안을 생성하는 함수
@@ -100,8 +103,9 @@ class GleeAgent:
     @classmethod
     async def generate_reply_suggestions_detail_length(
         cls, suggestion: str, length: str, add_description: str
-    ) -> tuple[list[str], list[str]]:
+    ) -> AiSuggestionDto:
 
-        result = await cls.orchestrator_agent.run_manual_mode_extended(suggestion, length, add_description)
-
-        return result["replies"], result["titles"]
+        title, extend_suggestion = await cls.orchestrator_agent.run_manual_mode_extended(
+            suggestion, length, add_description
+        )
+        return AiSuggestionDto(titles=title, suggestions=extend_suggestion)

@@ -1,55 +1,50 @@
-import os
 import yaml
-import random  # random 모듈 추가
-from typing import Optional, Union, Dict, Any
-
-
-from dotenv import load_dotenv
+import random
+from typing import Optional, Union, Dict, Any, Tuple
 from app.core.settings import settings
 
-load_dotenv()
 
-
-def load_config(file_path):
+def load_config(file_path: str) -> Dict[str, Any]:
+    """YAML 파일을 로드하여 딕셔너리 형태로 반환합니다."""
     with open(file_path, "r", encoding="utf-8") as f:
-        config = yaml.safe_load(f)
+        config: Dict[str, Any] = yaml.safe_load(f)
     return config
 
 
 def get_headers_payloads(
-    config_path: Union[str, Dict[str, Any]], conversation: Optional[str] = None, random_seed: Optional[bool] = False
-):
+    config_path: Union[str, Dict[str, Any]], conversation: Optional[str] = None, random_seed: bool = False
+) -> Tuple[Dict[str, str], Dict[str, Any]]:
+    """헤더와 페이로드를 반환하는 함수"""
 
     # config_path가 문자열이면 파일에서 로드, 딕셔너리면 그대로 사용
-    if isinstance(config_path, str):
-        config = load_config(config_path)
-    else:
-        config = config_path
+    config: Dict[str, Any] = load_config(config_path) if isinstance(config_path, str) else config_path
 
-    BEARER_TOKEN = os.getenv("CLOVA_AI_BEARER_TOKEN")
-    REQUEST_ID = os.getenv("CLOVA_REQ_ID_REPLY_SUMMARY")
+    # 환경 변수에서 토큰과 요청 ID 가져오기
+    BEARER_TOKEN: Optional[str] = settings.CLOVA_AI_BEARER_TOKEN
+    REQUEST_ID: Optional[str] = settings.CLOVA_REQ_ID_REPLY_SUMMARY
 
     if not BEARER_TOKEN or not REQUEST_ID:
-        BEARER_TOKEN = settings.CLOVA_AI_BEARER_TOKEN
-        REQUEST_ID = settings.CLOVA_REQ_ID_REPLY_SUMMARY
+        raise ValueError("CLOVA_AI_BEARER_TOKEN 또는 CLOVA_REQ_ID_REPLY_SUMMARY 환경 변수가 설정되지 않았습니다.")
 
-    headers = {
+    # 헤더 생성
+    headers: Dict[str, str] = {
         "Authorization": f"Bearer {BEARER_TOKEN}",
         "X-NCP-CLOVASTUDIO-REQUEST-ID": REQUEST_ID,
         "Content-Type": "application/json",
         "Accept": "text/event-stream",
     }
 
-    # conversation이 None이 아닐 때만 messages에 user content 추가
-    messages = [{"role": "system", "content": config["SYSTEM_PROMPT"]}]
-    if conversation is not None:
+    # 기본 시스템 메시지 설정
+    messages: list[Dict[str, str]] = [{"role": "system", "content": config["SYSTEM_PROMPT"]}]
+
+    if conversation:
         messages.append({"role": "user", "content": conversation})
 
-    # random_seed가 True일 경우 랜덤 시드 생성
-    seed = random.randint(0, 10000) if random_seed else config["HYPER_PARAM"]["seed"]
+    # 랜덤 시드 설정
+    seed: int = random.randint(0, 10000) if random_seed else config["HYPER_PARAM"]["seed"]
 
-    payload = {
-        # "messages": [{"role": "system", "content": config["SYSTEM_PROMPT"]}, {"role": "user", "content": conversation}],
+    # 페이로드 생성
+    payload: Dict[str, Any] = {
         "messages": messages,
         "topP": config["HYPER_PARAM"]["topP"],
         "topK": config["HYPER_PARAM"]["topK"],
@@ -58,7 +53,7 @@ def get_headers_payloads(
         "repeatPenalty": config["HYPER_PARAM"]["repeatPenalty"],
         "stopBefore": config["HYPER_PARAM"]["stopBefore"],
         "includeAiFilters": config["HYPER_PARAM"]["includeAiFilters"],
-        "seed": seed,  # 랜덤 또는 설정된 시드 값 사용
+        "seed": seed,
     }
 
     return headers, payload
