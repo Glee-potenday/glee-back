@@ -1,5 +1,3 @@
-from typing import Dict, Union, List
-
 from ai.services.agent.feedback_agent import FeedbackAgent
 from ai.services.agent.ocr_agent import OcrAgent
 from ai.services.agent.reply_suggestion_agent import ReplySuggestionAgent
@@ -50,11 +48,11 @@ class OrchestratorAgent:
 
         # 답변 제안 생성 (말투, 용도, 추가 설명 정보 활용)
         replies = await self.reply_agent_new.run(detailed_input)
-        feedreplies = [
+        feedback_replies = [
             await self.feedback_agent.improve_reply(reply, detailed_input, self.reply_agent_new) for reply in replies
         ]
 
-        return titles, replies
+        return titles, feedback_replies
 
     async def run_manual_mode_extended(
         self, suggestion: str, length: str, add_description: str
@@ -74,8 +72,8 @@ class OrchestratorAgent:
 
         # 답변 제안 생성
         replies = await self.reply_agent_new.run(suggestion_input)
-        replies = [
+        improve_replies = [
             await self.feedback_agent.improve_reply(reply, suggestion_input, self.reply_agent_new) for reply in replies
         ]
 
-        return titles, replies
+        return titles, improve_replies

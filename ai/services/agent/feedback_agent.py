@@ -1,5 +1,3 @@
-from typing import Union
-
 from ai.services.agent.summarizer_agent import SummarizerAgent
 from ai.services.agent.reply_suggestion_agent import ReplySuggestionAgent
 

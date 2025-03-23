@@ -1,7 +1,4 @@
 import asyncio
-
-from typing import List, Tuple
-
 from loguru import logger
 
 
@@ -40,7 +37,7 @@ class OcrAgent:
 
         return ""
 
-    async def run(self, images: List[Tuple[str, bytes]]) -> str:
+    async def run(self, images: list[tuple[str, bytes]]) -> str:
         """이미지 파일에서 텍스트를 추출합니다."""
         aggregated_text = []
 

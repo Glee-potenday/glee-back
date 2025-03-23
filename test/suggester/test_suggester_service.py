@@ -148,8 +148,8 @@ async def test_regenerate_suggestions() -> None:
     exist_suggestion = "내가 저번에 한 말 때문에 상처 받았다면 정말 미안해. 내가 너무 생각없이 말한 것 같아. 다신 이런일 없도록 조심할게"
     length = ContentLength.EXTEND.value
     detail = "앞으로 잘 지내자는 내용을 추가 해줘"
-    title, suggestions = await SuggesterService.regenerate_suggestions(exist_suggestion, length, detail)
-
+    response = await SuggesterService.regenerate_suggestions(exist_suggestion, length, detail)
+    titles, suggestions = response.titles, response.suggestions
     assert len(suggestions) > 0
-    assert len(title) > 0
+    assert len(titles) > 0
     assert len(suggestions[0]) > len(exist_suggestion)
